@@ -14,19 +14,17 @@ class ContaCorrente:
     def __init__(self, nome, cpf, agencia, num_conta):
         self.nome = nome
         self.cpf = cpf
-        self.saldo = 33100
+        self.saldo = 0
         self.limite = None
         self.agencia = agencia
         self.num_conta = num_conta
         self.transacoes = []
 
     def consultar_saldo(self):
-        print(f"Seu saldo atual: R$ {self.saldo:,.2f}")
+        print(f"{self.nome} | Seu saldo atual: R$ {self.saldo:,.2f}")
 
     def consultar_transacoes(self):
-        print(f"Historico de transacoes: ")
-        for transacao in self.transacoes:
-            print(transacao)
+        print(f"Historico de transacoes: ", *self.transacoes, sep="\n")
 
     # "metodo auxiliar" para o metodo sacar | metodo que sera usado apenas dentro da classe
     def _limite_negativo(self):
@@ -48,7 +46,6 @@ class ContaCorrente:
     def sacar(self, valor):
         if self.saldo - valor < self._limite_negativo():
             print(f"Saldo insuficiente para realizar saque.")
-            self.consultar_saldo()
         else:
             self.saldo -= valor
             self.transacoes.append(
@@ -56,32 +53,69 @@ class ContaCorrente:
                     f"Valor: -{valor} | Saldo: {self.saldo:,.2f} | Data/hora: {ContaCorrente._data_hora()}"
                 )
             )
-            self.consultar_saldo()
+
+        self.consultar_saldo()
+
+    def transferir(self, valor, conta_destino):
+        self.saldo -= valor
+        self.transacoes.append(
+            (
+                f"Valor: -{valor} | Saldo: {self.saldo:,.2f} | Data/hora: {ContaCorrente._data_hora()}"
+            )
+        )
+        conta_destino.saldo += valor
+        conta_destino.transacoes.append(
+            (
+                f"Valor: +{valor} | Saldo: {conta_destino.saldo:,.2f} | Data/hora: {ContaCorrente._data_hora()}"
+            )
+        )
 
 
 # inicio
 conta_Leonardo = ContaCorrente("Leonardo", "123.123.123-12", 1234, 330033)
 conta_Leonardo.consultar_saldo()
 
-# deposito
-conta_Leonardo.depositar(33)
-conta_Leonardo.consultar_saldo()
 
+# deposito
+print("-" * 20)
+conta_Leonardo.depositar(33)
 time.sleep(2)
+
 # saque
+print("-" * 20)
 conta_Leonardo.sacar(333333333)
 conta_Leonardo.sacar(133)
 
 # tentando entrar no negativo
+print("-" * 20)
 time.sleep(2)
 conta_Leonardo.sacar(37000)
 
 
 # saldo final
+print("-" * 20)
 print("\nSaldo final: ")
 conta_Leonardo.consultar_saldo()
 conta_Leonardo.consultar_cheque_especial()
 
 # consultar transacoes
-print()
+print("-" * 20)
 conta_Leonardo.consultar_transacoes()
+
+# nova instancia
+print("-" * 20)
+conta_Teste = ContaCorrente("Nome do Teste", "123.123.123-33", 4321, 112233)
+print(f"Saldo teste: {conta_Teste.consultar_saldo()}")
+
+# transferencia
+print("-" * 20)
+conta_Leonardo.transferir(333, conta_Teste)
+
+conta_Leonardo.consultar_saldo()
+conta_Teste.consultar_saldo()
+
+print("-" * 20)
+conta_Leonardo.consultar_transacoes()
+
+print("-" * 20)
+conta_Teste.consultar_transacoes()
