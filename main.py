@@ -1,53 +1,87 @@
+from datetime import datetime
+import pytz
+import time
+
+
 class ContaCorrente:
 
-    def __init__(self, nome, cpf):
+    @staticmethod
+    def _data_hora():
+        fuso_BR = pytz.timezone("Brazil/East")
+        horario_br = datetime.now(fuso_BR)
+        return horario_br.strftime("%d/%m/%Y %H:%M:%S")
 
+    def __init__(self, nome, cpf, agencia, num_conta):
         self.nome = nome
         self.cpf = cpf
-        self.saldo = 0
+        self.saldo = 33100
         self.limite = None
+        self.agencia = agencia
+        self.num_conta = num_conta
+        self.transacoes = []
 
     def consultar_saldo(self):
-        return self.saldo
+        print(f"Seu saldo atual: R$ {self.saldo:,.2f}")
 
-    def limite_negativo(self):
+    def consultar_transacoes(self):
+        print(f"Historico de transacoes: ")
+        for transacao in self.transacoes:
+            print(transacao)
+
+    # "metodo auxiliar" para o metodo sacar | metodo que sera usado apenas dentro da classe
+    def _limite_negativo(self):
         self.limite = -1000
         return self.limite
 
+    def consultar_cheque_especial(self):
+        print(f"Seu limite de cheque especial: R$ {self._limite_negativo():,.2f}")
+
     def depositar(self, valor):
         self.saldo += valor
-        return self.saldo
+        self.transacoes.append(
+            (
+                f"Valor: +{valor} | Saldo: {self.saldo:,.2f} | Data/Hora: {ContaCorrente._data_hora()}"
+            )
+        )
+        self.consultar_saldo()
 
     def sacar(self, valor):
-        if self.saldo - valor > self.limite_negativo():
-            self.saldo -= valor
-            return self.saldo
+        if self.saldo - valor < self._limite_negativo():
+            print(f"Saldo insuficiente para realizar saque.")
+            self.consultar_saldo()
         else:
-            print(f"Saldo insuficiente para sacar esse valor!")
-            return self.saldo
+            self.saldo -= valor
+            self.transacoes.append(
+                (
+                    f"Valor: -{valor} | Saldo: {self.saldo:,.2f} | Data/hora: {ContaCorrente._data_hora()}"
+                )
+            )
+            self.consultar_saldo()
 
 
-conta_Leonardo = ContaCorrente("Leonardo", "123.123.123-12")
+# inicio
+conta_Leonardo = ContaCorrente("Leonardo", "123.123.123-12", 1234, 330033)
+conta_Leonardo.consultar_saldo()
 
-saldo_Leonardo = conta_Leonardo.consultar_saldo()
-print("Saldo atual: R$ {:,.2f}".format(saldo_Leonardo))
+# deposito
+conta_Leonardo.depositar(33)
+conta_Leonardo.consultar_saldo()
 
-valor_deposito = 500
-conta_Leonardo.depositar(valor_deposito)
-saldo_Leonardo = conta_Leonardo.consultar_saldo()
-print(
-    "Deposito de R$ {:,.2f}. Saldo atual: R$ {:,.2f}".format(
-        valor_deposito, saldo_Leonardo
-    )
-)
+time.sleep(2)
+# saque
+conta_Leonardo.sacar(333333333)
+conta_Leonardo.sacar(133)
 
-valor_saque = 3000
-conta_Leonardo.sacar(valor_saque)
-saldo_Leonardo = conta_Leonardo.consultar_saldo()
-print(
-    "Saque de R$ {:,.2f}. Saldo atual: R$ {:,.2f}".format(valor_saque, saldo_Leonardo)
-)
+# tentando entrar no negativo
+time.sleep(2)
+conta_Leonardo.sacar(37000)
 
 
-valor_saque = 8000
-conta_Leonardo.sacar(valor_saque)
+# saldo final
+print("\nSaldo final: ")
+conta_Leonardo.consultar_saldo()
+conta_Leonardo.consultar_cheque_especial()
+
+# consultar transacoes
+print()
+conta_Leonardo.consultar_transacoes()
