@@ -71,6 +71,16 @@ class ContaCorrente:
         )
 
 
+class CartaoCredito:
+    def __init__(self, titular, conta_corrente):
+        self.titular = None
+        self.numero_cartao = None
+        self.validade = None
+        self.cod_seguranca = None
+        self.limite = 1000
+        self.conta_corrente = None
+
+
 # inicio
 conta_Leonardo = ContaCorrente("Leonardo", "123.123.123-12", 1234, 330033)
 conta_Leonardo.consultar_saldo()
