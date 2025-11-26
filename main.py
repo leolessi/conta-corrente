@@ -1,4 +1,5 @@
 from datetime import datetime
+from random import randint
 import pytz
 import time
 
@@ -19,6 +20,7 @@ class ContaCorrente:
         self._agencia = agencia
         self._num_conta = num_conta
         self._transacoes = []
+        self.cartoes = []
 
     def consultar_saldo(self):
         print(f"{self._nome} | Seu saldo atual: R$ {self._saldo:,.2f}")
@@ -72,60 +74,42 @@ class ContaCorrente:
 
 
 class CartaoCredito:
+
+    @staticmethod
+    def _data_hora():
+        fuso_BR = pytz.timezone("Brazil/East")
+        horario_br = datetime.now(fuso_BR)
+        return horario_br
+
+    @staticmethod
+    def gerar_numero_cartao():
+        numero_cartao = randint(1000000000000000, 9999999999999999)
+        return numero_cartao
+
+    @staticmethod
+    def gerar_validade():
+        mes_validade = CartaoCredito._data_hora().month
+        ano_validade = CartaoCredito._data_hora().year
+        return f"{mes_validade}/{ano_validade + 4}"
+
     def __init__(self, titular, conta_corrente):
-        self.titular = None
-        self.numero_cartao = None
-        self.validade = None
-        self.cod_seguranca = None
+        self.titular = titular
+        self.numero_cartao = CartaoCredito.gerar_numero_cartao()
+        self.validade = CartaoCredito.gerar_validade()
+        self.cod_seguranca = f"{randint(0, 9)}{randint(0, 9)}{randint(0, 9)}"
         self.limite = 1000
-        self.conta_corrente = None
+        self.conta_corrente = conta_corrente
+        conta_corrente.cartoes.append(self)
 
 
 # inicio
 conta_Leonardo = ContaCorrente("Leonardo", "123.123.123-12", 1234, 330033)
-conta_Leonardo.consultar_saldo()
+
+# instancia do cartao
+cartao_Leonardo = CartaoCredito("Leonardo", conta_Leonardo)
 
 
-# deposito
-print("-" * 20)
-conta_Leonardo.depositar(33)
-time.sleep(2)
-
-# saque
-print("-" * 20)
-conta_Leonardo.sacar(333333333)
-conta_Leonardo.sacar(133)
-
-# tentando entrar no negativo
-print("-" * 20)
-time.sleep(2)
-conta_Leonardo.sacar(37000)
-
-
-# saldo final
-print("-" * 20)
-print("\nSaldo final: ")
-conta_Leonardo.consultar_saldo()
-conta_Leonardo.consultar_cheque_especial()
-
-# consultar transacoes
-print("-" * 20)
-conta_Leonardo.consultar_transacoes()
-
-# nova instancia
-print("-" * 20)
-conta_Teste = ContaCorrente("Nome do Teste", "123.123.123-33", 4321, 112233)
-print(f"Saldo teste: {conta_Teste.consultar_saldo()}")
-
-# transferencia
-print("-" * 20)
-conta_Leonardo.transferir(333, conta_Teste)
-
-conta_Leonardo.consultar_saldo()
-conta_Teste.consultar_saldo()
-
-print("-" * 20)
-conta_Leonardo.consultar_transacoes()
-
-print("-" * 20)
-conta_Teste.consultar_transacoes()
+print(conta_Leonardo.cartoes[0].titular)
+print(cartao_Leonardo.numero_cartao)
+print(cartao_Leonardo.validade)
+print(cartao_Leonardo.cod_seguranca)
