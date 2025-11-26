@@ -12,61 +12,61 @@ class ContaCorrente:
         return horario_br.strftime("%d/%m/%Y %H:%M:%S")
 
     def __init__(self, nome, cpf, agencia, num_conta):
-        self.nome = nome
-        self.cpf = cpf
-        self.saldo = 0
-        self.limite = None
-        self.agencia = agencia
-        self.num_conta = num_conta
-        self.transacoes = []
+        self._nome = nome
+        self._cpf = cpf
+        self._saldo = 0
+        self._limite = None
+        self._agencia = agencia
+        self._num_conta = num_conta
+        self._transacoes = []
 
     def consultar_saldo(self):
-        print(f"{self.nome} | Seu saldo atual: R$ {self.saldo:,.2f}")
+        print(f"{self._nome} | Seu saldo atual: R$ {self._saldo:,.2f}")
 
     def consultar_transacoes(self):
-        print(f"Historico de transacoes: ", *self.transacoes, sep="\n")
+        print(f"Historico de transacoes: ", *self._transacoes, sep="\n")
 
     # "metodo auxiliar" para o metodo sacar | metodo que sera usado apenas dentro da classe
     def _limite_negativo(self):
-        self.limite = -1000
-        return self.limite
+        self._limite = -1000
+        return self._limite
 
     def consultar_cheque_especial(self):
         print(f"Seu limite de cheque especial: R$ {self._limite_negativo():,.2f}")
 
     def depositar(self, valor):
-        self.saldo += valor
-        self.transacoes.append(
+        self._saldo += valor
+        self._transacoes.append(
             (
-                f"Valor: +{valor} | Saldo: {self.saldo:,.2f} | Data/Hora: {ContaCorrente._data_hora()}"
+                f"Valor: +{valor} | Saldo: {self._saldo:,.2f} | Data/Hora: {ContaCorrente._data_hora()}"
             )
         )
         self.consultar_saldo()
 
     def sacar(self, valor):
-        if self.saldo - valor < self._limite_negativo():
+        if self._saldo - valor < self._limite_negativo():
             print(f"Saldo insuficiente para realizar saque.")
         else:
-            self.saldo -= valor
-            self.transacoes.append(
+            self._saldo -= valor
+            self._transacoes.append(
                 (
-                    f"Valor: -{valor} | Saldo: {self.saldo:,.2f} | Data/hora: {ContaCorrente._data_hora()}"
+                    f"Valor: -{valor} | Saldo: {self._saldo:,.2f} | Data/hora: {ContaCorrente._data_hora()}"
                 )
             )
 
         self.consultar_saldo()
 
     def transferir(self, valor, conta_destino):
-        self.saldo -= valor
-        self.transacoes.append(
+        self._saldo -= valor
+        self._transacoes.append(
             (
-                f"Valor: -{valor} | Saldo: {self.saldo:,.2f} | Data/hora: {ContaCorrente._data_hora()}"
+                f"Valor: -{valor} | Saldo: {self._saldo:,.2f} | Data/hora: {ContaCorrente._data_hora()}"
             )
         )
-        conta_destino.saldo += valor
-        conta_destino.transacoes.append(
+        conta_destino._saldo += valor
+        conta_destino._transacoes.append(
             (
-                f"Valor: +{valor} | Saldo: {conta_destino.saldo:,.2f} | Data/hora: {ContaCorrente._data_hora()}"
+                f"Valor: +{valor} | Saldo: {conta_destino._saldo:,.2f} | Data/hora: {ContaCorrente._data_hora()}"
             )
         )
 
