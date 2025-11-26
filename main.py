@@ -92,11 +92,16 @@ class CartaoCredito:
         ano_validade = CartaoCredito._data_hora().year
         return f"{mes_validade}/{ano_validade + 4}"
 
+    @staticmethod
+    def gerar_codigo_seguranca():
+        codigo_seguranca = f"{randint(0, 9)}{randint(0, 9)}{randint(0, 9)}"
+        return codigo_seguranca
+
     def __init__(self, titular, conta_corrente):
         self.titular = titular
         self.numero_cartao = CartaoCredito.gerar_numero_cartao()
         self.validade = CartaoCredito.gerar_validade()
-        self.cod_seguranca = f"{randint(0, 9)}{randint(0, 9)}{randint(0, 9)}"
+        self.cod_seguranca = CartaoCredito.gerar_codigo_seguranca()
         self.limite = 1000
         self.conta_corrente = conta_corrente
         conta_corrente.cartoes.append(self)
