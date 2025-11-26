@@ -83,8 +83,10 @@ class CartaoCredito:
 
     @staticmethod
     def gerar_numero_cartao():
-        numero_cartao = randint(1000000000000000, 9999999999999999)
-        return numero_cartao
+        numeros_finais_cartao = randint(100000000000, 999999999999)
+        numero_total_cartao = f"3300{numeros_finais_cartao}"
+        numero_total_cartao_int = int(numero_total_cartao)
+        return numero_total_cartao_int
 
     @staticmethod
     def gerar_validade():
