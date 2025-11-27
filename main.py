@@ -102,11 +102,23 @@ class CartaoCredito:
     def __init__(self, titular, conta_corrente):
         self.titular = titular
         self.numero_cartao = CartaoCredito.gerar_numero_cartao()
+        self._senha = "1234"
         self.validade = CartaoCredito.gerar_validade()
         self.cod_seguranca = CartaoCredito.gerar_codigo_seguranca()
         self.limite = 1000
         self.conta_corrente = conta_corrente
         conta_corrente.cartoes.append(self)
+
+    @property
+    def senha(self):
+        return self._senha
+
+    @senha.setter
+    def senha(self, valor):
+        if len(valor) == 4 and valor.isnumeric():
+            self._senha = valor
+        else:
+            print("Nova senha inválida!")
 
 
 # inicio
@@ -120,3 +132,7 @@ print(conta_Leonardo.cartoes[0].titular)
 print(cartao_Leonardo.numero_cartao)
 print(cartao_Leonardo.validade)
 print(cartao_Leonardo.cod_seguranca)
+
+print(cartao_Leonardo.senha)
+cartao_Leonardo.senha = "4321"
+print(cartao_Leonardo.senha)
