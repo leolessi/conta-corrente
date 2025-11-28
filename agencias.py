@@ -27,14 +27,46 @@ class Agencia:
         self.clientes.append((nome, cpf, patrimonio))
 
 
-agencia_1 = Agencia(11911112222, 2000000000, 1234)
-agencia_1.verificar_caixa()
+class AgenciaVirtual(Agencia):
 
-agencia_1.caixa = 123123123123123
-agencia_1.verificar_caixa()
+    def __init__(self, telefone, cnpj, site):
+        super().__init__(telefone, cnpj, numero="0001")
+        self.site = site
+        self.caixa = 2500000
 
-agencia_1.fornecer_emprestimo(23123, 12312312312, 0.02)
-agencia_1.verificar_caixa()
 
-agencia_1.adicionar_cliente("Leonardo", 11122233344, 10000)
-print(agencia_1.clientes)
+class AgenciaSilver(Agencia):
+
+    def __init__(self, telefone, cnpj):
+        super().__init__(telefone, cnpj, numero="0002")
+        self.caixa = 5000000
+
+
+class AgenciaBlack(Agencia):
+
+    def __init__(self, telefone, cnpj):
+        super().__init__(telefone, cnpj, numero="0003")
+        self.caixa = 15000000
+
+
+print("-" * 30)
+
+agencia_virtual = AgenciaVirtual(
+    11911111111,
+    1000000001,
+    "www.agenciavirtual.com.br",
+)
+agencia_virtual.verificar_caixa()
+print(agencia_virtual.clientes)
+print(agencia_virtual.numero)
+print(agencia_virtual.site)
+
+print("-" * 30)
+
+agencia_silver = AgenciaSilver(11922222222, 2000000002)
+agencia_silver.verificar_caixa()
+
+print("-" * 30)
+
+agencia_black = AgenciaBlack(11933333333, 3000000003)
+agencia_black.verificar_caixa()
