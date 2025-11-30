@@ -33,6 +33,26 @@ class AgenciaVirtual(Agencia):
         super().__init__(telefone, cnpj, numero="0001")
         self.site = site
         self.caixa = 2500000
+        self.caixa_paypal = 0
+
+    # metodos de tranferencia paypal <-> caixa da agencia
+    def depositar_paypal(self, valor):
+        if valor <= self.caixa:
+            self.caixa -= valor
+            self.caixa_paypal += valor
+        else:
+            print(
+                f"Caixa principal insuficiente para transferência (R$ {self.caixa:,.2f})"
+            )
+
+    def sacar_paypal(self, valor):
+        if valor >= self.caixa_paypal:
+            self.caixa_paypal -= valor
+            self.caixa += valor
+        else:
+            print(
+                f"Caixa do paypal insuficiente para transferência (R$ {self.caixa:,.2f})"
+            )
 
 
 class AgenciaSilver(Agencia):
@@ -49,7 +69,7 @@ class AgenciaBlack(Agencia):
         self.caixa = 15000000
 
 
-print("-" * 30)
+# print("-" * 30)
 
 agencia_virtual = AgenciaVirtual(
     11911111111,
@@ -57,16 +77,9 @@ agencia_virtual = AgenciaVirtual(
     "www.agenciavirtual.com.br",
 )
 agencia_virtual.verificar_caixa()
-print(agencia_virtual.clientes)
-print(agencia_virtual.numero)
-print(agencia_virtual.site)
-
-print("-" * 30)
+agencia_virtual.depositar_paypal(500000)
+print(agencia_virtual.caixa)
+print(agencia_virtual.caixa_paypal)
 
 agencia_silver = AgenciaSilver(11922222222, 2000000002)
-agencia_silver.verificar_caixa()
-
-print("-" * 30)
-
 agencia_black = AgenciaBlack(11933333333, 3000000003)
-agencia_black.verificar_caixa()
