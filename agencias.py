@@ -68,6 +68,12 @@ class AgenciaBlack(Agencia):
         super().__init__(telefone, cnpj, numero="0003")
         self.caixa = 15000000
 
+    def adicionar_cliente(self, nome, cpf, patrimonio):
+        if patrimonio >= 1000000:
+            super().adicionar_cliente(nome, cpf, patrimonio)
+        else:
+            print(f"Patrimonio insuficiente para essa Agencia.")
+
 
 # print("-" * 30)
 
@@ -82,4 +88,7 @@ print(agencia_virtual.caixa)
 print(agencia_virtual.caixa_paypal)
 
 agencia_silver = AgenciaSilver(11922222222, 2000000002)
+
 agencia_black = AgenciaBlack(11933333333, 3000000003)
+agencia_black.adicionar_cliente("Leonardo", "12312312312", 20000000)
+print(agencia_black.clientes)
